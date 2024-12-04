@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="de">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Wechsel der WordPress- und PHP-Version</title>
+		<style>
+			* {
+				box-sizing: border-box;
+			}
+			body {
+				font-family: Arial, sans-serif;
+				margin: 20px;
+				padding: 0;
+				color: #253043;
+			}
+			h1 {
+				color: #253043;
+			}
+			form {
+				max-width: 500px;
+				margin: auto;
+			}
+			label {
+				font-weight: bold;
+			}
+			input,
+			select,
+			button {
+				display: block;
+				width: 100%;
+				margin: 10px 0;
+				padding: 10px;
+				font-size: 16px;
+			}
+			button {
+				background-color: #253043;
+				color: white;
+				border: none;
+				cursor: pointer;
+			}
+			button:hover {
+				background-color: #445566;
+			}
+			.section {
+				margin-bottom: 40px;
+			}
+			.output {
+				margin-top: 20px;
+				padding: 10px;
+				background-color: #f1f1f1;
+				border: 1px solid #ccc;
+				white-space: pre-wrap;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="section">
+			<form id="wpForm">
+				<h1>WordPress-Version wechseln</h1>
+				<label for="path">Pfad zur WordPress-Installation:</label>
+				<input
+					type="text"
+					id="path"
+					name="path"
+					value="/var/www/html/wordpress/..."
+					required
+				/>
+
+				<label for="version">WordPress-Version:</label>
+				<input
+					type="text"
+					id="version"
+					name="version"
+					placeholder="z.B. 6.4"
+					required
+				/>
+
+				<label for="locale">Sprache (Code):</label>
+				<select id="locale" name="locale" required>
+					<option value="de_DE" selected>Deutsch (de_DE)</option>
+					<option value="en_US">Englisch (en_US)</option>
+					<option value="fr_FR">Französisch (fr_FR)</option>
+					<option value="es_ES">Spanisch (es_ES)</option>
+				</select>
+
+				<button type="submit">Version wechseln</button>
+			</form>
+			<div class="output" id="wpOutput"></div>
+		</div>
+
+		<div class="section">
+			<p></p>
+			<form id="phpForm" method="POST" action="php_switcher.php">
+				<h1>PHP-Version wechseln</h1>
+				<label for="php_version">Gewünschte PHP-Version:</label>
+				<select name="php_version" id="php_version">
+					<option value="php5.6">PHP 5.6</option>
+					<option value="php7.4">PHP 7.4</option>
+					<option value="php8.1">PHP 8.1</option>
+					<option value="php8.2">PHP 8.2</option>
+					<option value="php8.3">PHP 8.3</option>
+				</select>
+				<button type="submit">Version Wechseln</button>
+			</form>
+		</div>
+
+		<script>
+			const wpForm = document.getElementById('wpForm');
+			const wpOutputDiv = document.getElementById('wpOutput');
+
+			wpForm.addEventListener('submit', async (event) => {
+				event.preventDefault();
+
+				const path = document.getElementById('path').value;
+				const version = document.getElementById('version').value;
+				const locale = document.getElementById('locale').value;
+
+				wpOutputDiv.textContent = 'Bearbeitung läuft...';
+
+				try {
+					const response = await fetch('execute-script.php', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/x-www-form-urlencoded',
+						},
+						body: new URLSearchParams({ path, version, locale }),
+					});
+
+					const result = await response.text();
+					wpOutputDiv.textContent = result;
+				} catch (error) {
+					wpOutputDiv.textContent = 'Fehler: ' + error.message;
+				}
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,22 @@
+# Allgemeine Dateien
+*.log
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db
+
+# Editor-spezifische Dateien
+.history/
+.idea/
+.vscode/
+
+# Sensible oder irrelevante Dateien
+ZZ-Verbesserungen
+ZZ.md
+
+# Betriebssystem-spezifisch
+*.~*
+
+# PHP/Server-spezifisch
+/vendor/
+node_modules/
